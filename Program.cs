@@ -4,11 +4,39 @@ class Program
 {
     static void Main()
     {
+        // Display the instructions when the program starts.
         ShowInstructions();
 
-        Console.WriteLine();
-        Console.WriteLine("CMPS 3111 Language Recognizer");
-        Console.WriteLine("Program starting...");
+        // Keep the program running until the user enters EXIT.
+        while (true)
+        {
+            Console.WriteLine();
+            Console.Write("Enter string (EXIT = quit, INFO = instructions): ");
+
+            string input = Console.ReadLine() ?? "";
+
+            // Check whether the user wants to exit.
+            if (input.Equals("EXIT", StringComparison.OrdinalIgnoreCase))
+            {
+                Console.WriteLine();
+                Console.WriteLine("Program terminated.");
+                break;
+            }
+
+            // Check whether the user wants to see the instructions again.
+            if (input.Equals("INFO", StringComparison.OrdinalIgnoreCase))
+            {
+                Console.WriteLine();
+                ShowInstructions();
+                continue;
+            }
+
+            // Temporary message.
+            // Grammar validation will be added in a later stage.
+            Console.WriteLine();
+            Console.WriteLine("Input received: " + input);
+            Console.WriteLine("Validation will be added next.");
+        }
     }
 
     static void ShowInstructions()
