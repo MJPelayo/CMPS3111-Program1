@@ -6,15 +6,31 @@ class Program
     {
         Validator validator = new Validator();
 
-        Console.WriteLine("Coordinate Validator Test");
+        Console.WriteLine("Instruction Validator Test");
         Console.WriteLine();
 
-        Console.WriteLine("A1: " + validator.ValidateCoordinate("A1"));
-        Console.WriteLine("C4: " + validator.ValidateCoordinate("C4"));
-        Console.WriteLine("G6: " + validator.ValidateCoordinate("G6"));
-        Console.WriteLine("H2: " + validator.ValidateCoordinate("H2"));
-        Console.WriteLine("A8: " + validator.ValidateCoordinate("A8"));
-        Console.WriteLine("A10: " + validator.ValidateCoordinate("A10"));
-        Console.WriteLine("1A: " + validator.ValidateCoordinate("1A"));
+        Console.WriteLine("SQR A1-C4: "
+            + validator.ValidateInstruction("SQR A1-C4"));
+
+        Console.WriteLine("TRI A1-C6-G3: "
+            + validator.ValidateInstruction("TRI A1-C6-G3"));
+
+        Console.WriteLine("SQR A1-C4-G3: "
+            + validator.ValidateInstruction("SQR A1-C4-G3"));
+
+        Console.WriteLine("TRI A1-C4: "
+            + validator.ValidateInstruction("TRI A1-C4"));
+
+        Console.WriteLine("CIR A1-C4: "
+            + validator.ValidateInstruction("CIR A1-C4"));
+
+        Console.WriteLine("SQR A1+C4: "
+            + validator.ValidateInstruction("SQR A1+C4"));
+
+        Console.WriteLine("SQR H1-C4: "
+            + validator.ValidateInstruction("SQR H1-C4"));
+
+        Console.WriteLine("TRI A1-C6-G8: "
+            + validator.ValidateInstruction("TRI A1-C6-G8"));
     }
 }
