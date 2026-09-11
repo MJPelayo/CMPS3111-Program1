@@ -12,10 +12,8 @@ class Program
         // Display instructions when the program starts.
         ShowInstructions();
 
-
-        // ========================================================
         // MAIN INPUT LOOP
-        // ========================================================
+        
         while (true)
         {
             Console.WriteLine();
@@ -27,9 +25,9 @@ class Program
             string input = Console.ReadLine() ?? "";
 
 
-            // ====================================================
+            
             // EXIT COMMAND
-            // ====================================================
+            
             if (input.Equals(
                 "EXIT",
                 StringComparison.OrdinalIgnoreCase))
@@ -40,9 +38,9 @@ class Program
             }
 
 
-            // ====================================================
+            
             // INFO COMMAND
-            // ====================================================
+            
             if (input.Equals(
                 "INFO",
                 StringComparison.OrdinalIgnoreCase))
@@ -53,9 +51,9 @@ class Program
             }
 
 
-            // ====================================================
+            
             // EMPTY INPUT
-            // ====================================================
+            
             if (string.IsNullOrEmpty(input))
             {
                 Console.WriteLine();
@@ -67,15 +65,15 @@ class Program
             }
 
 
-            // ====================================================
+           
             // VALIDATE COMPLETE PROGRAM
-            // ====================================================
+            
             bool isValid = validator.ValidateProgram(input);
 
 
-            // ====================================================
+           
             // INVALID INPUT
-            // ====================================================
+           
             if (!isValid)
             {
                 Console.WriteLine();
@@ -135,9 +133,9 @@ class Program
             }
 
 
-            // ====================================================
+           
             // VALID INPUT
-            // ====================================================
+            
             Console.WriteLine();
 
             Console.WriteLine(
@@ -149,15 +147,15 @@ class Program
             );
 
 
-            // ====================================================
+           
             // RIGHTMOST DERIVATION
-            // ====================================================
+            
             derivation.DisplayRightmostDerivation(input);
 
 
-            // ====================================================
+           
             // PARSE TREE CHOICE
-            // ====================================================
+            
             Console.WriteLine();
 
             Console.Write(
@@ -200,9 +198,9 @@ class Program
     }
 
 
-    // ============================================================
+   
     // DISPLAY PROGRAM INSTRUCTIONS
-    // ============================================================
+    
     static void ShowInstructions()
     {
         Console.WriteLine(
@@ -220,10 +218,9 @@ class Program
         Console.WriteLine();
 
 
-        // --------------------------------------------------------
+        
         // GRAMMAR
-        // --------------------------------------------------------
-        Console.WriteLine("GRAMMAR");
+        
 
         Console.WriteLine(
             "<program> → begin <instructions> end"
@@ -266,9 +263,9 @@ class Program
         Console.WriteLine();
 
 
-        // --------------------------------------------------------
+        
         // INPUT INSTRUCTIONS
-        // --------------------------------------------------------
+        
         Console.WriteLine("INPUT INSTRUCTIONS");
 
         Console.WriteLine(
@@ -302,9 +299,9 @@ class Program
         Console.WriteLine();
 
 
-        // --------------------------------------------------------
+       
         // VALID EXAMPLES
-        // --------------------------------------------------------
+        
         Console.WriteLine("VALID EXAMPLES");
 
         Console.WriteLine(
@@ -322,9 +319,9 @@ class Program
         Console.WriteLine();
 
 
-        // --------------------------------------------------------
+       
         // COMMANDS
-        // --------------------------------------------------------
+       
         Console.WriteLine("COMMANDS");
 
         Console.WriteLine(
