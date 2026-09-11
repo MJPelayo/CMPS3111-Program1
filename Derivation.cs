@@ -1,12 +1,15 @@
 using System;
-using System.Collections.Generic;
 
 public class Derivation
 {
     // ============================================================
     // DISPLAY RIGHTMOST DERIVATION
     //
+    // A rightmost derivation always expands the rightmost
+    // nonterminal in the current sentential form.
+    //
     // Grammar:
+    //
     // <program> → begin <instructions> end
     //
     // <instructions> → <instruction>
@@ -29,21 +32,7 @@ public class Derivation
         Console.WriteLine("==================================================");
         Console.WriteLine();
 
-        // Start with the start symbol of the grammar.
-        string current = "<program>";
-
-        Console.WriteLine(current);
-
-        // --------------------------------------------------------
-        // STEP 1
-        // <program> → begin <instructions> end
-        // --------------------------------------------------------
-        current = "begin <instructions> end";
-        Console.WriteLine("=> " + current);
-
-        // --------------------------------------------------------
-        // Get the instructions from the original input.
-        // --------------------------------------------------------
+        // Extract the instruction section from the valid input.
         string instructionText = input.Substring(
             6,
             input.Length - 10
@@ -52,38 +41,154 @@ public class Derivation
         string[] instructions = instructionText.Split('.');
 
         // --------------------------------------------------------
-        // If there is only one instruction:
+        // Start symbol.
+        // --------------------------------------------------------
+        string current = "<program>";
+
+        Console.WriteLine(current);
+
+        // --------------------------------------------------------
+        // <program> → begin <instructions> end
+        // --------------------------------------------------------
+        current = "begin <instructions> end";
+
+        Console.WriteLine("=> " + current);
+
+
+        // --------------------------------------------------------
+        // Expand <instructions>.
         //
-        // <instructions> → <instruction>
+        // For multiple instructions:
+        //
+        // <instructions>
+        //     → <instruction> . <instructions>
+        //
+        // The rightmost <instructions> is expanded first.
         // --------------------------------------------------------
         if (instructions.Length == 1)
         {
-            current = "begin <instruction> end";
-            Console.WriteLine("=> " + current);
-
-            DisplayInstructionDerivation(
-                instructions[0].Trim()
+            current = ReplaceRightmost(
+                current,
+                "<instructions>",
+                "<instruction>"
             );
+
+            Console.WriteLine("=> " + current);
         }
         else
         {
-            // ----------------------------------------------------
-            // Multiple instructions:
-            //
-            // <instructions>
-            //     → <instruction> . <instructions>
-            //
-            // Because this is a RIGHTMOST derivation, the
-            // rightmost <instructions> is expanded first.
-            // ----------------------------------------------------
-            DisplayMultipleInstructionDerivation(
-                instructions
+            // Continue applying the recursive rule until there
+            // is one <instruction> placeholder for every input
+            // instruction.
+            for (int i = 0; i < instructions.Length - 1; i++)
+            {
+                current = ReplaceRightmost(
+                    current,
+                    "<instructions>",
+                    "<instruction> . <instructions>"
+                );
+
+                Console.WriteLine("=> " + current);
+            }
+
+            // The final <instructions> becomes <instruction>.
+            current = ReplaceRightmost(
+                current,
+                "<instructions>",
+                "<instruction>"
             );
+
+            Console.WriteLine("=> " + current);
         }
+
+
+        // --------------------------------------------------------
+        // Expand instructions from RIGHT TO LEFT.
+        // --------------------------------------------------------
+        for (int i = instructions.Length - 1; i >= 0; i--)
+        {
+            string instruction = instructions[i].Trim();
+
+            string command = instruction.Split(
+                ' ',
+                StringSplitOptions.RemoveEmptyEntries
+            )[0];
+
+            string coordinatesText = instruction.Split(
+                ' ',
+                StringSplitOptions.RemoveEmptyEntries
+            )[1];
+
+            string[] coordinates = coordinatesText.Split('-');
+
+            // ----------------------------------------------------
+            // Replace the rightmost <instruction>.
+            // ----------------------------------------------------
+            string instructionProduction;
+
+            if (command == "SQR")
+            {
+                instructionProduction =
+                    "SQR <coord>-<coord>";
+            }
+            else
+            {
+                instructionProduction =
+                    "TRI <coord>-<coord>-<coord>";
+            }
+
+            current = ReplaceRightmost(
+                current,
+                "<instruction>",
+                instructionProduction
+            );
+
+            Console.WriteLine("=> " + current);
+
+
+            // ----------------------------------------------------
+            // Expand the coordinates from RIGHT TO LEFT.
+            // ----------------------------------------------------
+            for (int coordinateIndex =
+                 coordinates.Length - 1;
+                 coordinateIndex >= 0;
+                 coordinateIndex--)
+            {
+                string coordinate = coordinates[coordinateIndex];
+
+                // <coord> → <x><y>
+                current = ReplaceRightmost(
+                    current,
+                    "<coord>",
+                    "<x><y>"
+                );
+
+                Console.WriteLine("=> " + current);
+
+                // <y> → actual Y value
+                current = ReplaceRightmost(
+                    current,
+                    "<y>",
+                    coordinate[1].ToString()
+                );
+
+                Console.WriteLine("=> " + current);
+
+                // <x> → actual X value
+                current = ReplaceRightmost(
+                    current,
+                    "<x>",
+                    coordinate[0].ToString()
+                );
+
+                Console.WriteLine("=> " + current);
+            }
+        }
+
 
         Console.WriteLine();
         Console.WriteLine("Final generated sentence:");
-        Console.WriteLine(input);
+        Console.WriteLine(current);
 
         Console.WriteLine();
         Console.WriteLine("==================================================");
@@ -91,293 +196,27 @@ public class Derivation
 
 
     // ============================================================
-    // DISPLAY ONE INSTRUCTION DERIVATION
-    // ============================================================
-    private void DisplayInstructionDerivation(string instruction)
-    {
-        string[] parts = instruction.Split(
-            ' ',
-            StringSplitOptions.RemoveEmptyEntries
-        );
-
-        string command = parts[0];
-        string coordinatesText = parts[1];
-
-        string[] coordinates = coordinatesText.Split('-');
-
-        // --------------------------------------------------------
-        // SQR
-        // --------------------------------------------------------
-        if (command == "SQR")
-        {
-            // <instruction> → SQR <coord>-<coord>
-            string current =
-                "begin SQR <coord>-<coord> end";
-
-            Console.WriteLine("=> " + current);
-
-            // Expand the RIGHTMOST coordinate first.
-            current =
-                "begin SQR <coord>-<x><y> end";
-
-            Console.WriteLine("=> " + current);
-
-            // Expand Y.
-            current =
-                "begin SQR <coord>-" +
-                "<x>" +
-                coordinates[1][1] +
-                " end";
-
-            Console.WriteLine("=> " + current);
-
-            // Expand X.
-            current =
-                "begin SQR <coord>-" +
-                coordinates[1][0] +
-                coordinates[1][1] +
-                " end";
-
-            Console.WriteLine("=> " + current);
-
-            // Now expand the leftmost coordinate.
-            current =
-                "begin SQR <x><y>-" +
-                coordinates[1] +
-                " end";
-
-            Console.WriteLine("=> " + current);
-
-            // Expand Y.
-            current =
-                "begin SQR <x>" +
-                coordinates[0][1] +
-                "-" +
-                coordinates[1] +
-                " end";
-
-            Console.WriteLine("=> " + current);
-
-            // Expand X.
-            current =
-                "begin SQR " +
-                coordinates[0][0] +
-                coordinates[0][1] +
-                "-" +
-                coordinates[1] +
-                " end";
-
-            Console.WriteLine("=> " + current);
-        }
-
-        // --------------------------------------------------------
-        // TRI
-        // --------------------------------------------------------
-        else if (command == "TRI")
-        {
-            // <instruction> → TRI <coord>-<coord>-<coord>
-            string current =
-                "begin TRI <coord>-<coord>-<coord> end";
-
-            Console.WriteLine("=> " + current);
-
-            // Expand the RIGHTMOST coordinate first.
-            current =
-                "begin TRI <coord>-<coord>-<x><y> end";
-
-            Console.WriteLine("=> " + current);
-
-            // Expand Y.
-            current =
-                "begin TRI <coord>-<coord>-" +
-                "<x>" +
-                coordinates[2][1] +
-                " end";
-
-            Console.WriteLine("=> " + current);
-
-            // Expand X.
-            current =
-                "begin TRI <coord>-<coord>-" +
-                coordinates[2][0] +
-                coordinates[2][1] +
-                " end";
-
-            Console.WriteLine("=> " + current);
-
-            // Expand the middle coordinate.
-            current =
-                "begin TRI <coord>-<x><y>-" +
-                coordinates[2] +
-                " end";
-
-            Console.WriteLine("=> " + current);
-
-            // Expand Y.
-            current =
-                "begin TRI <coord>-" +
-                "<x>" +
-                coordinates[1][1] +
-                "-" +
-                coordinates[2] +
-                " end";
-
-            Console.WriteLine("=> " + current);
-
-            // Expand X.
-            current =
-                "begin TRI <coord>-" +
-                coordinates[1][0] +
-                coordinates[1][1] +
-                "-" +
-                coordinates[2] +
-                " end";
-
-            Console.WriteLine("=> " + current);
-
-            // Expand the leftmost coordinate.
-            current =
-                "begin TRI <x><y>-" +
-                coordinates[1] +
-                "-" +
-                coordinates[2] +
-                " end";
-
-            Console.WriteLine("=> " + current);
-
-            // Expand Y.
-            current =
-                "begin TRI <x>" +
-                coordinates[0][1] +
-                "-" +
-                coordinates[1] +
-                "-" +
-                coordinates[2] +
-                " end";
-
-            Console.WriteLine("=> " + current);
-
-            // Expand X.
-            current =
-                "begin TRI " +
-                coordinates[0][0] +
-                coordinates[0][1] +
-                "-" +
-                coordinates[1] +
-                "-" +
-                coordinates[2] +
-                " end";
-
-            Console.WriteLine("=> " + current);
-        }
-    }
-
-
-    // ============================================================
-    // DISPLAY MULTIPLE INSTRUCTION DERIVATION
-    // ============================================================
-    private void DisplayMultipleInstructionDerivation(
-        string[] instructions)
-    {
-        // --------------------------------------------------------
-        // Start by expanding <instructions> recursively.
-        // --------------------------------------------------------
-        string current = "begin <instruction> . <instructions> end";
-
-        Console.WriteLine("=> " + current);
-
-        // Continue expanding the rightmost <instructions>.
-        for (int i = 1; i < instructions.Length - 1; i++)
-        {
-            current += " . <instructions>";
-            Console.WriteLine("=> " + current);
-        }
-
-        // --------------------------------------------------------
-        // Expand the rightmost instruction first.
-        // --------------------------------------------------------
-        string lastInstruction = instructions[^1].Trim();
-
-        Console.WriteLine();
-        Console.WriteLine(
-            "Expanding rightmost instruction: " +
-            lastInstruction
-        );
-
-        DisplayInstructionStepsOnly(lastInstruction);
-
-        // --------------------------------------------------------
-        // Display the remaining instructions.
-        // --------------------------------------------------------
-        for (int i = instructions.Length - 2; i >= 0; i--)
-        {
-            Console.WriteLine();
-            Console.WriteLine(
-                "Expanding instruction: " +
-                instructions[i].Trim()
-            );
-
-            DisplayInstructionStepsOnly(
-                instructions[i].Trim()
-            );
-        }
-    }
-
-
-    // ============================================================
-    // DISPLAY INSTRUCTION STEPS
+    // REPLACE RIGHTMOST OCCURRENCE
     //
-    // This helper displays the grammar expansion for an
-    // individual SQR or TRI instruction.
+    // This helper is what allows the program to perform a true
+    // rightmost derivation.
     // ============================================================
-    private void DisplayInstructionStepsOnly(string instruction)
+    private string ReplaceRightmost(
+        string text,
+        string oldValue,
+        string newValue)
     {
-        string[] parts = instruction.Split(
-            ' ',
-            StringSplitOptions.RemoveEmptyEntries
-        );
+        int position = text.LastIndexOf(oldValue);
 
-        string command = parts[0];
-        string coordinatesText = parts[1];
-
-        string[] coordinates = coordinatesText.Split('-');
-
-        if (command == "SQR")
+        if (position == -1)
         {
-            Console.WriteLine(
-                "    <instruction> => SQR <coord>-<coord>"
-            );
-
-            Console.WriteLine(
-                "    Rightmost <coord> => " +
-                coordinates[1]
-            );
-
-            Console.WriteLine(
-                "    Leftmost <coord> => " +
-                coordinates[0]
-            );
+            return text;
         }
-        else if (command == "TRI")
-        {
-            Console.WriteLine(
-                "    <instruction> => TRI <coord>-<coord>-<coord>"
-            );
 
-            Console.WriteLine(
-                "    Rightmost <coord> => " +
-                coordinates[2]
-            );
-
-            Console.WriteLine(
-                "    Middle <coord> => " +
-                coordinates[1]
-            );
-
-            Console.WriteLine(
-                "    Leftmost <coord> => " +
-                coordinates[0]
-            );
-        }
+        return text.Substring(0, position) +
+               newValue +
+               text.Substring(
+                   position + oldValue.Length
+               );
     }
 }

@@ -4,6 +4,7 @@ public class Validator
 {
     // ============================================================
     // VALIDATE COORDINATE
+    //
     // Grammar:
     // <coord> → <x><y>
     // <x> → A | B | C | D | E | F | G
@@ -11,101 +12,191 @@ public class Validator
     // ============================================================
     public bool ValidateCoordinate(string coordinate)
     {
+        return string.IsNullOrEmpty(
+            GetCoordinateError(coordinate)
+        );
+    }
+
+
+    // ============================================================
+    // GET COORDINATE ERROR
+    // ============================================================
+    public string GetCoordinateError(string coordinate)
+    {
         // A coordinate must contain exactly two characters.
         if (coordinate.Length != 2)
         {
-            return false;
+            return $"Invalid coordinate '{coordinate}'. " +
+                   "A coordinate must contain exactly two characters.";
         }
 
-        // The first character represents the X coordinate.
         char x = coordinate[0];
-
-        // The second character represents the Y coordinate.
         char y = coordinate[1];
 
-        // X must be a letter from A through G.
+        // X must be A through G.
         bool validX = x >= 'A' && x <= 'G';
 
-        // Y must be a number from 1 through 6.
+        // Y must be 1 through 6.
         bool validY = y >= '1' && y <= '6';
 
-        // The coordinate is valid only when both X and Y are valid.
-        return validX && validY;
+
+        // Both X and Y are invalid.
+        if (!validX && !validY)
+        {
+            return $"Invalid coordinate '{coordinate}'. " +
+                   $"'{x}' is not a valid X value and '{y}' " +
+                   "is not a valid Y value. " +
+                   "X must be A through G and Y must be 1 through 6.";
+        }
+
+
+        // X is invalid.
+        if (!validX)
+        {
+            return $"Invalid coordinate '{coordinate}'. " +
+                   $"'{x}' is not a valid X value. " +
+                   "X must be A through G.";
+        }
+
+
+        // Y is invalid.
+        if (!validY)
+        {
+            return $"Invalid coordinate '{coordinate}'. " +
+                   $"{x} is a valid X value, but {y} is not a valid Y value. " +
+                   "Y must be 1 through 6.";
+        }
+
+
+        // The coordinate is valid.
+        return "";
     }
 
 
     // ============================================================
     // VALIDATE INSTRUCTION
+    //
     // Grammar:
     // <instruction> → SQR <coord>-<coord>
     //                | TRI <coord>-<coord>-<coord>
     // ============================================================
     public bool ValidateInstruction(string instruction)
     {
-        // Separate the command from the coordinates.
+        return string.IsNullOrEmpty(
+            GetInstructionError(instruction)
+        );
+    }
+
+
+    // ============================================================
+    // GET INSTRUCTION ERROR
+    // ============================================================
+    public string GetInstructionError(string instruction)
+    {
         string[] parts = instruction.Split(
             ' ',
             StringSplitOptions.RemoveEmptyEntries
         );
 
-        // An instruction must contain a command and coordinates.
+        // An instruction requires a command and coordinates.
         if (parts.Length != 2)
         {
-            return false;
+            return $"Invalid instruction '{instruction}'. " +
+                   "The instruction must contain a command " +
+                   "followed by its coordinates.";
         }
 
         string command = parts[0];
         string coordinates = parts[1];
 
 
-        // --------------------------------------------------------
+        // ========================================================
         // SQR
-        // --------------------------------------------------------
+        // ========================================================
         if (command == "SQR")
         {
-            // Separate the two coordinates using the dash.
             string[] coords = coordinates.Split('-');
 
             // SQR requires exactly two coordinates.
             if (coords.Length != 2)
             {
-                return false;
+                return "Invalid SQR instruction. " +
+                       "SQR requires exactly two coordinates " +
+                       "separated by a dash (-).";
             }
 
-            // Both coordinates must be valid.
-            return ValidateCoordinate(coords[0]) &&
-                   ValidateCoordinate(coords[1]);
+            // Validate first coordinate.
+            string error = GetCoordinateError(coords[0]);
+
+            if (!string.IsNullOrEmpty(error))
+            {
+                return error;
+            }
+
+            // Validate second coordinate.
+            error = GetCoordinateError(coords[1]);
+
+            if (!string.IsNullOrEmpty(error))
+            {
+                return error;
+            }
+
+            return "";
         }
 
 
-        // --------------------------------------------------------
+        // ========================================================
         // TRI
-        // --------------------------------------------------------
+        // ========================================================
         if (command == "TRI")
         {
-            // Separate the three coordinates using the dashes.
             string[] coords = coordinates.Split('-');
 
             // TRI requires exactly three coordinates.
             if (coords.Length != 3)
             {
-                return false;
+                return "Invalid TRI instruction. " +
+                       "TRI requires exactly three coordinates " +
+                       "separated by dashes (-).";
             }
 
-            // All three coordinates must be valid.
-            return ValidateCoordinate(coords[0]) &&
-                   ValidateCoordinate(coords[1]) &&
-                   ValidateCoordinate(coords[2]);
+            // Validate first coordinate.
+            string error = GetCoordinateError(coords[0]);
+
+            if (!string.IsNullOrEmpty(error))
+            {
+                return error;
+            }
+
+            // Validate second coordinate.
+            error = GetCoordinateError(coords[1]);
+
+            if (!string.IsNullOrEmpty(error))
+            {
+                return error;
+            }
+
+            // Validate third coordinate.
+            error = GetCoordinateError(coords[2]);
+
+            if (!string.IsNullOrEmpty(error))
+            {
+                return error;
+            }
+
+            return "";
         }
 
 
-        // The command was neither SQR nor TRI.
-        return false;
+        // Unknown command.
+        return $"Invalid command '{command}'. " +
+               "The only valid commands are SQR and TRI.";
     }
 
 
     // ============================================================
     // VALIDATE COMPLETE PROGRAM
+    //
     // Grammar:
     // <program> → begin <instructions> end
     //
@@ -114,49 +205,69 @@ public class Validator
     // ============================================================
     public bool ValidateProgram(string input)
     {
-        // The complete program must begin with "begin "
-        // and finish with " end".
-        if (!input.StartsWith("begin ") ||
-            !input.EndsWith(" end"))
+        return string.IsNullOrEmpty(
+            GetProgramError(input)
+        );
+    }
+
+
+    // ============================================================
+    // GET PROGRAM ERROR
+    // ============================================================
+    public string GetProgramError(string input)
+    {
+        // The program must begin with "begin ".
+        if (!input.StartsWith("begin "))
         {
-            return false;
+            return "Invalid program. " +
+                   "The input must begin with 'begin'.";
         }
 
+        // The program must end with " end".
+        if (!input.EndsWith(" end"))
+        {
+            return "Invalid program. " +
+                   "The input must end with 'end'.";
+        }
 
-        // Remove "begin " from the beginning and
-        // " end" from the end.
+        // Extract everything between begin and end.
         string instructionText = input.Substring(
             6,
             input.Length - 10
         );
 
+        // At least one instruction is required.
+        if (string.IsNullOrWhiteSpace(instructionText))
+        {
+            return "Invalid program. " +
+                   "At least one instruction is required.";
+        }
 
         // Multiple instructions are separated by periods.
         string[] instructions = instructionText.Split('.');
 
-
-        // At least one instruction must exist.
-        if (instructions.Length == 0)
-        {
-            return false;
-        }
-
-
         // Validate every instruction.
-        foreach (string instruction in instructions)
+        for (int i = 0; i < instructions.Length; i++)
         {
-            // Remove extra spaces around an instruction.
-            string cleanedInstruction = instruction.Trim();
+            string instruction = instructions[i].Trim();
 
-            // Every instruction must follow the grammar.
-            if (!ValidateInstruction(cleanedInstruction))
+            // Check for an empty instruction.
+            if (string.IsNullOrEmpty(instruction))
             {
-                return false;
+                return "Invalid program. " +
+                       "An empty instruction was found.";
+            }
+
+            // Validate the instruction.
+            string error = GetInstructionError(instruction);
+
+            if (!string.IsNullOrEmpty(error))
+            {
+                return $"Instruction {i + 1}: {error}";
             }
         }
 
-
-        // All parts of the program are valid.
-        return true;
+        // Everything follows the grammar.
+        return "";
     }
 }
