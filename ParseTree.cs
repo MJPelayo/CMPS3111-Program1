@@ -41,12 +41,16 @@ public class ParseTree
         Console.WriteLine("<program>");
         Console.WriteLine("├── begin");
 
-        // Display the instructions subtree.
+        // <instructions> is a child of <program>.
+        Console.WriteLine("├── <instructions>");
+
         DisplayInstructionsTree(
             instructions,
-            "├── "
+            0,
+            "│   "
         );
 
+        // end is the final child of <program>.
         Console.WriteLine("└── end");
 
         Console.WriteLine();
@@ -55,38 +59,17 @@ public class ParseTree
 
 
     // ============================================================
-    // DISPLAY INSTRUCTIONS TREE
+    // DISPLAY <instructions> TREE
     //
-    // For one instruction:
+    // Grammar:
     //
-    // <instructions>
-    //     └── <instruction>
+    // <instructions> → <instruction>
+    //                 | <instruction> . <instructions>
     //
-    // For multiple instructions:
-    //
-    // <instructions>
-    //     ├── <instruction>
-    //     ├── .
-    //     └── <instructions>
+    // This method recursively displays the structure of
+    // multiple instructions.
     // ============================================================
     private void DisplayInstructionsTree(
-        string[] instructions,
-        string prefix)
-    {
-        Console.WriteLine(prefix + "<instructions>");
-
-        DisplayInstructionBranch(
-            instructions,
-            0,
-            prefix + "    "
-        );
-    }
-
-
-    // ============================================================
-    // DISPLAY RECURSIVE INSTRUCTION BRANCH
-    // ============================================================
-    private void DisplayInstructionBranch(
         string[] instructions,
         int index,
         string prefix)
@@ -97,7 +80,7 @@ public class ParseTree
             index == instructions.Length - 1;
 
         // --------------------------------------------------------
-        // Display the current instruction.
+        // <instruction>
         // --------------------------------------------------------
         if (lastInstruction)
         {
@@ -122,7 +105,7 @@ public class ParseTree
             );
 
             // ----------------------------------------------------
-            // Period separating instructions.
+            // Period between instructions.
             // ----------------------------------------------------
             Console.WriteLine(
                 prefix + "├── ."
@@ -135,7 +118,7 @@ public class ParseTree
                 prefix + "└── <instructions>"
             );
 
-            DisplayInstructionBranch(
+            DisplayInstructionsTree(
                 instructions,
                 index + 1,
                 prefix + "    "
@@ -145,7 +128,7 @@ public class ParseTree
 
 
     // ============================================================
-    // DISPLAY INSTRUCTION TREE
+    // DISPLAY <instruction> TREE
     // ============================================================
     private void DisplayInstructionTree(
         string instruction,
@@ -171,6 +154,7 @@ public class ParseTree
                 prefix + "├── SQR"
             );
 
+            // First coordinate.
             Console.WriteLine(
                 prefix + "├── <coord>"
             );
@@ -180,10 +164,12 @@ public class ParseTree
                 prefix + "│   "
             );
 
+            // Dash.
             Console.WriteLine(
                 prefix + "├── -"
             );
 
+            // Second coordinate.
             Console.WriteLine(
                 prefix + "└── <coord>"
             );
@@ -204,6 +190,7 @@ public class ParseTree
                 prefix + "├── TRI"
             );
 
+            // First coordinate.
             Console.WriteLine(
                 prefix + "├── <coord>"
             );
@@ -213,10 +200,12 @@ public class ParseTree
                 prefix + "│   "
             );
 
+            // First dash.
             Console.WriteLine(
                 prefix + "├── -"
             );
 
+            // Second coordinate.
             Console.WriteLine(
                 prefix + "├── <coord>"
             );
@@ -226,10 +215,12 @@ public class ParseTree
                 prefix + "│   "
             );
 
+            // Second dash.
             Console.WriteLine(
                 prefix + "├── -"
             );
 
+            // Third coordinate.
             Console.WriteLine(
                 prefix + "└── <coord>"
             );
@@ -243,9 +234,10 @@ public class ParseTree
 
 
     // ============================================================
-    // DISPLAY COORDINATE TREE
+    // DISPLAY <coord> TREE
     //
     // Grammar:
+    //
     // <coord> → <x><y>
     // ============================================================
     private void DisplayCoordinateTree(
