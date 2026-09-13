@@ -1,7 +1,48 @@
 /* ============================================================
    CMPS 3111 — LANGUAGE RECOGNIZER
-   Main application stylesheet
+   Main Stylesheet
    ============================================================ */
+
+
+/* ============================================================
+   COLOR SYSTEM
+   ============================================================ */
+
+:root {
+
+    --bg-main: #07111f;
+    --bg-secondary: #0a1728;
+
+    --panel: #0d2135;
+    --panel-light: #102a43;
+
+    --editor: #06121f;
+
+    --border: #1b3a55;
+    --border-light: #244963;
+
+    --blue: #1597e5;
+    --blue-bright: #24b0ff;
+
+    --cyan: #16c7d9;
+
+    --green: #35d48a;
+    --green-dark: #103a2b;
+
+    --red: #ff5577;
+    --red-dark: #421d2b;
+
+    --yellow: #e7b84b;
+
+    --text: #edf6ff;
+    --text-soft: #a9bfd1;
+    --text-muted: #708ba1;
+
+    --shadow:
+        0 18px 45px rgba(0, 0, 0, 0.28);
+
+    --radius: 14px;
+}
 
 
 /* ============================================================
@@ -10,51 +51,29 @@
 
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
 }
 
 
-:root {
-    --bg-main: #07111f;
-    --bg-panel: #0b1f33;
-    --bg-editor: #06101c;
-    --bg-card: #102942;
-
-    --border: #1d3a55;
-
-    --blue: #1597e5;
-    --cyan: #16c7d9;
-    --purple: #7c3aed;
-    --gold: #d4a72c;
-
-    --white: #f4f7fa;
-    --text: #d6e0ea;
-    --muted: #8da1b5;
-
-    --success: #25d695;
-    --error: #ff637d;
-
-    --shadow: 0 18px 45px rgba(0, 0, 0, 0.30);
+html {
+    scroll-behavior: smooth;
 }
 
-
-/* ============================================================
-   BODY
-   ============================================================ */
 
 body {
+
+    margin: 0;
+
     min-height: 100vh;
 
     background:
         radial-gradient(
-            circle at 85% 10%,
-            rgba(21, 151, 229, 0.10),
+            circle at 15% 10%,
+            rgba(21, 151, 229, 0.09),
             transparent 30%
         ),
         radial-gradient(
-            circle at 10% 80%,
-            rgba(124, 58, 237, 0.08),
+            circle at 90% 80%,
+            rgba(124, 58, 237, 0.07),
             transparent 30%
         ),
         var(--bg-main);
@@ -63,8 +82,11 @@ body {
 
     font-family:
         Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
         "Segoe UI",
-        Arial,
         sans-serif;
 
     line-height: 1.5;
@@ -76,102 +98,129 @@ body {
    ============================================================ */
 
 .app-header {
-    width: 100%;
 
-    padding: 20px 6%;
+    height: 72px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
+
+    padding: 0 34px;
 
     border-bottom: 1px solid var(--border);
 
-    background: rgba(7, 17, 31, 0.92);
+    background:
+        rgba(5, 15, 27, 0.92);
 
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 20;
 }
 
 
 .brand {
+
     display: flex;
+
     align-items: center;
-    gap: 15px;
+
+    gap: 13px;
 }
 
 
 .brand-mark {
-    width: 48px;
-    height: 48px;
 
-    display: grid;
-    place-items: center;
+    width: 39px;
+    height: 39px;
 
-    border: 1px solid var(--blue);
-    border-radius: 10px;
+    display: flex;
 
-    background: rgba(21, 151, 229, 0.10);
+    align-items: center;
+    justify-content: center;
 
-    color: var(--cyan);
+    border-radius: 9px;
 
-    font-family:
-        "Cascadia Code",
-        "Consolas",
-        monospace;
+    background:
+        linear-gradient(
+            135deg,
+            var(--blue),
+            #0871b8
+        );
 
-    font-weight: 700;
+    color: white;
+
+    font-family: Consolas, monospace;
+
+    font-weight: 800;
 
     box-shadow:
-        0 0 22px rgba(21, 151, 229, 0.12);
+        0 0 20px rgba(21, 151, 229, 0.22);
 }
 
 
 .brand h1 {
-    color: var(--white);
 
-    font-size: 1rem;
+    margin: 0;
 
-    letter-spacing: 0.15em;
+    font-size: 14px;
+
+    letter-spacing: 1.8px;
+
+    font-weight: 800;
 }
 
 
 .brand p {
-    margin-top: 2px;
 
-    color: var(--muted);
+    margin: 1px 0 0;
 
-    font-size: 0.78rem;
+    color: var(--text-muted);
+
+    font-size: 11px;
 }
 
 
 .status {
+
     display: flex;
+
     align-items: center;
+
     gap: 8px;
 
-    padding: 8px 13px;
+    padding: 7px 11px;
 
     border: 1px solid var(--border);
-    border-radius: 999px;
 
-    color: var(--muted);
+    border-radius: 7px;
 
-    font-size: 0.72rem;
-    font-weight: 700;
+    color: var(--text-soft);
 
-    letter-spacing: 0.08em;
+    font-family: Consolas, monospace;
+
+    font-size: 9px;
+
+    letter-spacing: 0.8px;
 }
 
 
 .status-dot {
-    width: 8px;
-    height: 8px;
+
+    width: 7px;
+    height: 7px;
 
     border-radius: 50%;
 
-    background: var(--success);
+    background: var(--green);
 
     box-shadow:
-        0 0 10px rgba(37, 214, 149, 0.7);
+        0 0 10px rgba(53, 212, 138, 0.7);
 }
 
 
@@ -180,86 +229,94 @@ body {
    ============================================================ */
 
 .container {
-    width: min(1400px, 88%);
+
+    width: min(1180px, calc(100% - 48px));
 
     margin: 0 auto;
 
-    padding: 60px 0;
+    padding: 46px 0 60px;
 }
 
 
 /* ============================================================
-   INTRODUCTION
+   INTRO
    ============================================================ */
 
 .intro {
-    margin-bottom: 42px;
 
-    max-width: 850px;
+    margin-bottom: 28px;
 }
 
 
-.eyebrow,
-.panel-label {
-    display: block;
+.eyebrow {
 
-    margin-bottom: 8px;
+    display: inline-block;
+
+    margin-bottom: 7px;
 
     color: var(--cyan);
 
-    font-size: 0.72rem;
+    font-family: Consolas, monospace;
 
-    font-weight: 800;
+    font-size: 10px;
 
-    letter-spacing: 0.16em;
+    font-weight: 700;
+
+    letter-spacing: 1.8px;
 }
 
 
 .intro h2 {
-    color: var(--white);
 
-    font-size: clamp(2rem, 4vw, 3.6rem);
+    margin: 0;
 
-    line-height: 1.08;
+    max-width: 720px;
 
-    letter-spacing: -0.03em;
+    font-size: clamp(32px, 4vw, 48px);
+
+    line-height: 1.05;
+
+    letter-spacing: -1.8px;
 }
 
 
 .intro h2 span {
-    display: block;
 
     color: var(--blue);
 }
 
 
 .intro p {
-    max-width: 650px;
 
-    margin-top: 18px;
+    margin: 12px 0 0;
 
-    color: var(--muted);
+    color: var(--text-muted);
 
-    font-size: 1rem;
+    font-size: 13px;
 }
 
 
 /* ============================================================
-   WORKSPACE
+   TOP WORKSPACE
    ============================================================ */
 
+/*
+   Instead of making the input and result areas feel like
+   unrelated boxes, the workspace acts as one dashboard.
+*/
+
 .workspace {
+
     display: grid;
 
     grid-template-columns:
-        minmax(0, 1fr)
-        minmax(0, 1fr);
+        minmax(0, 1.05fr)
+        minmax(0, 0.95fr);
 
-    gap: 24px;
-}
+    gap: 0;
 
+    overflow: hidden;
 
-.panel {
     border: 1px solid var(--border);
 
     border-radius: 16px;
@@ -267,152 +324,293 @@ body {
     background:
         linear-gradient(
             145deg,
-            rgba(16, 41, 66, 0.95),
-            rgba(11, 31, 51, 0.95)
+            rgba(16, 42, 67, 0.94),
+            rgba(8, 25, 42, 0.98)
         );
 
     box-shadow: var(--shadow);
-
-    overflow: hidden;
 }
 
 
+/* ============================================================
+   PANELS
+   ============================================================ */
+
+.panel {
+
+    min-width: 0;
+
+    background: transparent;
+}
+
+
+.input-panel {
+
+    padding: 24px;
+
+    border-right: 1px solid var(--border);
+}
+
+
+.result-panel {
+
+    padding: 24px;
+
+    min-height: 470px;
+
+    background:
+        rgba(5, 18, 31, 0.22);
+}
+
+
+/* ============================================================
+   PANEL HEADER
+   ============================================================ */
+
 .panel-header {
+
     display: flex;
 
-    align-items: center;
+    align-items: flex-start;
+
     justify-content: space-between;
 
-    padding: 22px 24px;
+    gap: 15px;
 
-    border-bottom: 1px solid var(--border);
+    margin-bottom: 18px;
+}
+
+
+.panel-label {
+
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--cyan);
+
+    font-family: Consolas, monospace;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
 }
 
 
 .panel-header h3 {
-    color: var(--white);
 
-    font-size: 1.05rem;
+    margin: 0;
+
+    font-size: 16px;
+
+    letter-spacing: -0.2px;
 }
 
 
 .terminal-label,
-.connection-status,
-.output-badge,
-.grammar-tag {
+.grammar-tag,
+.output-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    white-space: nowrap;
+
+    padding: 5px 8px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 5px;
+
+    color: var(--text-muted);
+
+    font-family: Consolas, monospace;
+
+    font-size: 8px;
+
+    letter-spacing: 0.6px;
+
+    background:
+        rgba(4, 15, 26, 0.35);
+}
+
+
+/* ============================================================
+   CONNECTION STATUS
+   ============================================================ */
+
+.connection-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 62px;
+
     padding: 5px 9px;
 
     border: 1px solid var(--border);
 
     border-radius: 6px;
 
-    color: var(--muted);
+    color: var(--text-muted);
 
-    font-size: 0.65rem;
+    font-family: Consolas, monospace;
 
-    font-weight: 800;
+    font-size: 8px;
 
-    letter-spacing: 0.08em;
+    font-weight: 700;
+
+    letter-spacing: 0.7px;
+}
+
+
+.success-status {
+
+    border-color:
+        rgba(53, 212, 138, 0.35);
+
+    color: var(--green);
+
+    background:
+        rgba(53, 212, 138, 0.07);
+}
+
+
+.error-status {
+
+    border-color:
+        rgba(255, 85, 119, 0.35);
+
+    color: var(--red);
+
+    background:
+        rgba(255, 85, 119, 0.07);
+}
+
+
+.processing-status {
+
+    border-color:
+        rgba(21, 151, 229, 0.4);
+
+    color: var(--blue-bright);
+
+    background:
+        rgba(21, 151, 229, 0.08);
 }
 
 
 /* ============================================================
-   EDITOR
+   CODE EDITOR
    ============================================================ */
 
 .editor {
-    margin: 24px;
-
-    border: 1px solid var(--border);
-
-    border-radius: 10px;
 
     overflow: hidden;
 
-    background: var(--bg-editor);
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+
+    background: var(--editor);
+
+    box-shadow:
+        inset 0 0 25px rgba(0, 0, 0, 0.18);
 }
 
 
 .editor-top {
-    height: 38px;
+
+    height: 28px;
 
     display: flex;
+
     align-items: center;
 
-    gap: 7px;
+    gap: 5px;
 
-    padding: 0 14px;
+    padding: 0 10px;
 
     border-bottom: 1px solid var(--border);
 
-    background: #091a2b;
+    background:
+        rgba(17, 42, 63, 0.45);
 }
 
 
 .window-dot {
-    width: 8px;
-    height: 8px;
+
+    width: 5px;
+    height: 5px;
 
     border-radius: 50%;
 
-    background: var(--muted);
+    background: var(--text-muted);
 
-    opacity: 0.65;
+    opacity: 0.8;
 }
 
 
 .editor-title {
-    margin-left: 8px;
 
-    color: var(--muted);
+    margin-left: 5px;
 
-    font-family:
-        "Cascadia Code",
-        "Consolas",
-        monospace;
+    color: var(--text-muted);
 
-    font-size: 0.72rem;
+    font-family: Consolas, monospace;
+
+    font-size: 8px;
 }
 
 
 textarea {
+
     display: block;
 
     width: 100%;
 
-    min-height: 210px;
-
-    padding: 22px;
+    min-height: 158px;
 
     resize: vertical;
 
-    border: none;
+    padding: 17px;
+
+    border: 0;
 
     outline: none;
 
     background: transparent;
 
-    color: var(--white);
+    color: #e5f4ff;
 
     font-family:
-        "Cascadia Code",
-        "Consolas",
+        Consolas,
+        "Courier New",
         monospace;
 
-    font-size: 0.92rem;
+    font-size: 12px;
 
-    line-height: 1.8;
+    line-height: 1.7;
 }
 
 
 textarea::placeholder {
-    color: #526b80;
+
+    color: #49657b;
 }
 
 
 textarea:focus {
+
     box-shadow:
-        inset 0 0 0 1px rgba(21, 151, 229, 0.45);
+        inset 0 0 0 1px
+        rgba(21, 151, 229, 0.15);
 }
 
 
@@ -421,6 +619,357 @@ textarea:focus {
    ============================================================ */
 
 .examples {
+
+    display: flex;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 7px;
+
+    margin-top: 12px;
+
+    color: var(--text-muted);
+
+    font-family: Consolas, monospace;
+
+    font-size: 9px;
+}
+
+
+.examples button {
+
+    padding: 5px 9px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 5px;
+
+    background:
+        rgba(8, 27, 44, 0.75);
+
+    color: var(--text-soft);
+
+    font-family: Consolas, monospace;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.18s ease,
+        color 0.18s ease,
+        background 0.18s ease,
+        transform 0.18s ease;
+}
+
+
+.examples button:hover {
+
+    transform: translateY(-1px);
+
+    border-color: var(--blue);
+
+    color: var(--blue-bright);
+
+    background:
+        rgba(21, 151, 229, 0.08);
+}
+
+
+/* ============================================================
+   ACTION BUTTONS
+   ============================================================ */
+
+.actions {
+
+    display: grid;
+
+    grid-template-columns: 1fr auto;
+
+    gap: 9px;
+
+    margin-top: 16px;
+}
+
+
+.primary-button,
+.secondary-button {
+
+    height: 40px;
+
+    border-radius: 7px;
+
+    font-family:
+        Inter,
+        sans-serif;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.5px;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        border-color 0.18s ease,
+        background 0.18s ease;
+}
+
+
+.primary-button {
+
+    border: 1px solid
+        rgba(36, 176, 255, 0.5);
+
+    background:
+        linear-gradient(
+            135deg,
+            #1597e5,
+            #0879c1
+        );
+
+    color: white;
+
+    box-shadow:
+        0 8px 20px rgba(21, 151, 229, 0.15);
+}
+
+
+.primary-button:hover:not(:disabled) {
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 10px 25px rgba(21, 151, 229, 0.25);
+}
+
+
+.primary-button:active:not(:disabled) {
+
+    transform: translateY(0);
+}
+
+
+.primary-button:disabled {
+
+    opacity: 0.65;
+
+    cursor: wait;
+}
+
+
+.secondary-button {
+
+    padding: 0 16px;
+
+    border: 1px solid var(--border);
+
+    background:
+        rgba(7, 20, 33, 0.45);
+
+    color: var(--text-soft);
+}
+
+
+.secondary-button:hover {
+
+    border-color: var(--border-light);
+
+    color: white;
+
+    background:
+        rgba(16, 42, 67, 0.65);
+}
+
+
+/* ============================================================
+   RESULT CONTENT
+   ============================================================ */
+
+.result-content {
+
+    min-height: 385px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+}
+
+
+.empty-result {
+
+    align-items: center;
+
+    text-align: center;
+
+    padding: 30px;
+}
+
+
+.empty-result .result-icon {
+
+    margin-bottom: 14px;
+}
+
+
+.result-icon {
+
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    border: 1px solid var(--border);
+
+    background:
+        rgba(5, 18, 31, 0.55);
+
+    color: var(--text-muted);
+
+    font-family: Consolas, monospace;
+
+    font-size: 16px;
+
+    font-weight: 800;
+}
+
+
+.result-content h3 {
+
+    margin: 0 0 5px;
+
+    font-size: 15px;
+}
+
+
+.result-content > p {
+
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 11px;
+}
+
+
+/* ============================================================
+   RESULT ICONS
+   ============================================================ */
+
+.success-icon {
+
+    border-color:
+        rgba(53, 212, 138, 0.4);
+
+    background:
+        rgba(53, 212, 138, 0.08);
+
+    color: var(--green);
+
+    box-shadow:
+        0 0 25px rgba(53, 212, 138, 0.08);
+}
+
+
+.error-icon {
+
+    border-color:
+        rgba(255, 85, 119, 0.4);
+
+    background:
+        rgba(255, 85, 119, 0.08);
+
+    color: var(--red);
+
+    box-shadow:
+        0 0 25px rgba(255, 85, 119, 0.08);
+}
+
+
+.processing-icon {
+
+    border-color:
+        rgba(21, 151, 229, 0.4);
+
+    color: var(--blue-bright);
+
+    animation:
+        spin 1s linear infinite;
+}
+
+
+@keyframes spin {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* ============================================================
+   SUCCESS / ERROR RESULT LAYOUT
+   ============================================================ */
+
+.success-result,
+.error-result {
+
+    justify-content: flex-start;
+
+    padding-top: 4px;
+}
+
+
+.success-result > .result-icon,
+.error-result > .result-icon {
+
+    margin-bottom: 10px;
+}
+
+
+.success-result h3 {
+
+    color: var(--green);
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.3px;
+}
+
+
+.error-result h3 {
+
+    color: var(--red);
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.3px;
+}
+
+
+/* ============================================================
+   INSTRUCTION SUMMARY
+   ============================================================ */
+
+.instruction-summary {
+
     display: flex;
 
     align-items: center;
@@ -429,190 +978,439 @@ textarea:focus {
 
     gap: 8px;
 
-    padding: 0 24px 20px;
-
-    color: var(--muted);
-
-    font-size: 0.75rem;
+    margin: 14px 0;
 }
 
 
-.examples button {
-    padding: 6px 10px;
+.instruction-summary span {
 
-    border: 1px solid var(--border);
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 6px 9px;
 
     border-radius: 6px;
 
-    background: transparent;
+    font-family: Consolas, monospace;
 
-    color: var(--text);
-
-    cursor: pointer;
-
-    font-size: 0.68rem;
+    font-size: 9px;
 
     font-weight: 700;
-
-    transition: 0.2s ease;
 }
 
 
-.examples button:hover {
-    border-color: var(--blue);
+.summary-valid {
 
-    color: var(--cyan);
-
-    background: rgba(21, 151, 229, 0.08);
-}
-
-
-/* ============================================================
-   ACTIONS
-   ============================================================ */
-
-.actions {
-    display: flex;
-
-    gap: 12px;
-
-    padding: 0 24px 24px;
-}
-
-
-.primary-button,
-.secondary-button {
-    min-height: 46px;
-
-    padding: 0 18px;
-
-    border-radius: 8px;
-
-    cursor: pointer;
-
-    font-weight: 800;
-
-    letter-spacing: 0.04em;
-
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        background 0.2s ease;
-}
-
-
-.primary-button {
-    flex: 1;
-
-    border: 1px solid var(--blue);
+    border: 1px solid
+        rgba(53, 212, 138, 0.28);
 
     background:
-        linear-gradient(
-            135deg,
-            var(--blue),
-            #0d74b8
-        );
+        rgba(53, 212, 138, 0.07);
 
-    color: white;
-
-    box-shadow:
-        0 8px 24px rgba(21, 151, 229, 0.18);
+    color: var(--green);
 }
 
 
-.primary-button:hover {
-    transform: translateY(-2px);
+.summary-invalid {
 
-    box-shadow:
-        0 12px 30px rgba(21, 151, 229, 0.28);
-}
+    border: 1px solid
+        rgba(255, 85, 119, 0.28);
 
+    background:
+        rgba(255, 85, 119, 0.07);
 
-.secondary-button {
-    border: 1px solid var(--border);
-
-    background: transparent;
-
-    color: var(--text);
-}
-
-
-.secondary-button:hover {
-    border-color: var(--cyan);
-
-    color: var(--cyan);
+    color: var(--red);
 }
 
 
 /* ============================================================
-   RESULT
+   INSTRUCTION RESULTS
    ============================================================ */
 
-.result-content {
-    min-height: 335px;
+.instruction-results {
 
     display: flex;
 
     flex-direction: column;
 
-    justify-content: center;
+    gap: 8px;
 
-    align-items: center;
+    width: 100%;
 
-    text-align: center;
+    max-height: 310px;
 
-    padding: 40px;
+    overflow-y: auto;
+
+    padding-right: 5px;
 }
 
 
-.result-icon {
-    width: 70px;
-    height: 70px;
+/* ============================================================
+   CUSTOM SCROLLBAR
+   ============================================================ */
+
+.instruction-results::-webkit-scrollbar {
+
+    width: 5px;
+}
+
+
+.instruction-results::-webkit-scrollbar-track {
+
+    background:
+        rgba(0, 0, 0, 0.15);
+
+    border-radius: 10px;
+}
+
+
+.instruction-results::-webkit-scrollbar-thumb {
+
+    background:
+        #28465d;
+
+    border-radius: 10px;
+}
+
+
+.instruction-results::-webkit-scrollbar-thumb:hover {
+
+    background:
+        #37617c;
+}
+
+
+/* ============================================================
+   INSTRUCTION CARD
+   ============================================================ */
+
+.instruction-card {
+
+    position: relative;
 
     display: grid;
-    place-items: center;
 
-    margin-bottom: 20px;
+    grid-template-columns: 34px minmax(0, 1fr);
 
-    border: 1px solid var(--border);
+    gap: 11px;
 
-    border-radius: 14px;
+    padding: 11px 12px;
 
-    background: rgba(21, 151, 229, 0.08);
+    border-radius: 9px;
 
-    color: var(--cyan);
+    transition:
+        transform 0.18s ease,
+        background 0.18s ease,
+        border-color 0.18s ease;
+}
 
-    font-family:
-        "Cascadia Code",
-        "Consolas",
-        monospace;
+
+.instruction-card:hover {
+
+    transform: translateX(2px);
+}
+
+
+/* ============================================================
+   VALID INSTRUCTION
+   ============================================================ */
+
+.instruction-valid {
+
+    border: 1px solid
+        rgba(53, 212, 138, 0.2);
+
+    border-left: 3px solid var(--green);
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(53, 212, 138, 0.08),
+            rgba(53, 212, 138, 0.025)
+        );
+}
+
+
+.instruction-valid:hover {
+
+    border-color:
+        rgba(53, 212, 138, 0.35);
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(53, 212, 138, 0.11),
+            rgba(53, 212, 138, 0.035)
+        );
+}
+
+
+/* ============================================================
+   INVALID INSTRUCTION
+   ============================================================ */
+
+.instruction-invalid {
+
+    border: 1px solid
+        rgba(255, 85, 119, 0.23);
+
+    border-left: 3px solid var(--red);
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255, 85, 119, 0.09),
+            rgba(255, 85, 119, 0.025)
+        );
+}
+
+
+.instruction-invalid:hover {
+
+    border-color:
+        rgba(255, 85, 119, 0.38);
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255, 85, 119, 0.12),
+            rgba(255, 85, 119, 0.035)
+        );
+}
+
+
+/* ============================================================
+   INSTRUCTION ICON
+   ============================================================ */
+
+.instruction-icon {
+
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-top: 1px;
+
+    border-radius: 7px;
+
+    font-family: Consolas, monospace;
+
+    font-size: 13px;
+
+    font-weight: 900;
+}
+
+
+.instruction-valid .instruction-icon {
+
+    border: 1px solid
+        rgba(53, 212, 138, 0.35);
+
+    background:
+        rgba(53, 212, 138, 0.1);
+
+    color: var(--green);
+}
+
+
+.instruction-invalid .instruction-icon {
+
+    border: 1px solid
+        rgba(255, 85, 119, 0.35);
+
+    background:
+        rgba(255, 85, 119, 0.1);
+
+    color: var(--red);
+}
+
+
+/* ============================================================
+   INSTRUCTION DETAILS
+   ============================================================ */
+
+.instruction-details {
+
+    min-width: 0;
+}
+
+
+.instruction-heading {
+
+    margin-bottom: 3px;
+
+    color: var(--text-soft);
+
+    font-family: Consolas, monospace;
+
+    font-size: 9px;
 
     font-weight: 700;
 
-    font-size: 1.1rem;
+    text-transform: uppercase;
+
+    letter-spacing: 0.8px;
 }
 
 
-.result-content h3 {
-    color: var(--white);
+.instruction-code {
 
-    font-size: 1.25rem;
+    overflow-wrap: anywhere;
+
+    color: white;
+
+    font-family:
+        Consolas,
+        "Courier New",
+        monospace;
+
+    font-size: 11px;
+
+    line-height: 1.5;
 }
 
 
-.result-content p {
-    max-width: 420px;
+.instruction-valid .instruction-code {
+
+    color: #c9f9e2;
+}
+
+
+.instruction-invalid .instruction-code {
+
+    color: #ffd2dc;
+}
+
+
+/* ============================================================
+   INSTRUCTION MESSAGE
+   ============================================================ */
+
+.instruction-message {
+
+    margin-top: 5px;
+
+    font-size: 9px;
+
+    line-height: 1.45;
+}
+
+
+.valid-message {
+
+    color: var(--green);
+
+    font-family: Consolas, monospace;
+}
+
+
+.error-message {
 
     margin-top: 8px;
 
-    color: var(--muted);
+    padding: 7px 9px;
 
-    font-size: 0.9rem;
+    border-radius: 6px;
+
+    background:
+        rgba(255, 85, 119, 0.06);
+
+    color: #ffb7c6;
+
+    font-family: Consolas, monospace;
+
+    font-size: 9px;
 }
 
 
-.empty-result {
-    opacity: 0.9;
+.error-message strong {
+
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: var(--red);
+
+    font-size: 8px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.7px;
+}
+
+
+.error-message p {
+
+    margin: 0;
+
+    color: #ffbfcd;
+}
+
+
+/* ============================================================
+   PROGRAM ERROR
+   ============================================================ */
+
+.program-error {
+
+    width: 100%;
+
+    margin-top: 12px;
+
+    padding: 12px;
+
+    border: 1px solid
+        rgba(255, 85, 119, 0.25);
+
+    border-radius: 8px;
+
+    background:
+        rgba(255, 85, 119, 0.06);
+}
+
+
+.program-error strong {
+
+    color: var(--red);
+
+    font-size: 10px;
+}
+
+
+.program-error p {
+
+    margin: 5px 0 0;
+
+    color: #ffbfcd;
+
+    font-family: Consolas, monospace;
+
+    font-size: 9px;
+}
+
+
+/* ============================================================
+   NO INSTRUCTIONS
+   ============================================================ */
+
+.no-instructions {
+
+    padding: 20px;
+
+    border: 1px dashed var(--border);
+
+    border-radius: 8px;
+
+    color: var(--text-muted);
+
+    text-align: center;
+
+    font-size: 10px;
 }
 
 
@@ -621,257 +1419,242 @@ textarea:focus {
    ============================================================ */
 
 .output-section {
-    margin-top: 24px;
+
+    margin-top: 22px;
+
+    overflow: hidden;
 
     border: 1px solid var(--border);
 
-    border-radius: 16px;
+    border-radius: var(--radius);
 
-    background: var(--bg-panel);
+    background:
+        rgba(10, 31, 51, 0.92);
 
     box-shadow: var(--shadow);
-
-    overflow: hidden;
 }
 
 
-.hidden {
+.output-section.hidden {
+
     display: none;
 }
 
 
+/* ============================================================
+   TABS
+   ============================================================ */
+
 .tabs {
+
     display: flex;
 
     border-bottom: 1px solid var(--border);
 
-    background: #091a2b;
+    background:
+        rgba(5, 18, 31, 0.45);
 }
 
 
 .tab-button {
-    padding: 16px 22px;
 
-    border: none;
+    position: relative;
 
-    border-right: 1px solid var(--border);
+    padding: 13px 18px;
+
+    border: 0;
 
     background: transparent;
 
-    color: var(--muted);
+    color: var(--text-muted);
+
+    font-family: Consolas, monospace;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.7px;
 
     cursor: pointer;
+}
 
-    font-size: 0.72rem;
 
-    font-weight: 800;
+.tab-button::after {
 
-    letter-spacing: 0.08em;
+    content: "";
+
+    position: absolute;
+
+    left: 15px;
+    right: 15px;
+
+    bottom: -1px;
+
+    height: 2px;
+
+    background: transparent;
 }
 
 
 .tab-button:hover {
-    color: var(--white);
+
+    color: var(--text-soft);
 }
 
 
 .tab-button.active {
-    color: var(--cyan);
 
-    background: rgba(21, 151, 229, 0.08);
-
-    box-shadow:
-        inset 0 -2px 0 var(--cyan);
+    color: var(--blue-bright);
 }
 
 
+.tab-button.active::after {
+
+    background: var(--blue);
+}
+
+
+/* ============================================================
+   TAB CONTENT
+   ============================================================ */
+
 .tab-content {
+
     display: none;
 
-    padding: 28px;
+    padding: 22px;
 }
 
 
 .tab-content.active {
+
     display: block;
 }
 
 
-.output-header {
+/* ============================================================
+   OUTPUT HEADER
+   ============================================================ */
+
+.output-header,
+.grammar-header {
+
     display: flex;
 
-    align-items: center;
+    align-items: flex-start;
+
     justify-content: space-between;
 
-    margin-bottom: 18px;
+    gap: 15px;
+
+    margin-bottom: 15px;
 }
 
 
-.output-header h3 {
-    color: var(--white);
+.output-header h3,
+.grammar-header h3 {
 
-    font-size: 1.05rem;
+    margin: 0;
+
+    font-size: 15px;
 }
 
+
+/* ============================================================
+   CODE OUTPUT
+   ============================================================ */
 
 .code-output {
+
+    margin: 0;
+
     min-height: 250px;
 
-    padding: 22px;
+    max-height: 500px;
 
-    overflow-x: auto;
+    overflow: auto;
+
+    padding: 18px;
 
     border: 1px solid var(--border);
 
-    border-radius: 10px;
+    border-radius: 8px;
 
-    background: var(--bg-editor);
+    background: var(--editor);
 
-    color: #b9d9ec;
+    color: #cce7f8;
 
     font-family:
-        "Cascadia Code",
-        "Consolas",
+        Consolas,
+        "Courier New",
         monospace;
 
-    font-size: 0.82rem;
+    font-size: 11px;
 
-    line-height: 1.75;
+    line-height: 1.7;
 
     white-space: pre-wrap;
 }
 
 
 .tree-output {
-    color: #c5d8e7;
+
+    white-space: pre;
 }
 
 
 /* ============================================================
-   GRAMMAR
+   GRAMMAR SECTION
    ============================================================ */
 
 .grammar-section {
-    margin-top: 24px;
 
-    padding: 28px;
+    margin-top: 22px;
+
+    padding: 22px;
 
     border: 1px solid var(--border);
 
-    border-radius: 16px;
+    border-radius: var(--radius);
 
     background:
-        linear-gradient(
-            145deg,
-            rgba(16, 41, 66, 0.9),
-            rgba(11, 31, 51, 0.9)
-        );
+        rgba(10, 31, 51, 0.92);
 
     box-shadow: var(--shadow);
 }
 
 
-.grammar-header {
-    display: flex;
-
-    align-items: center;
-    justify-content: space-between;
-
-    margin-bottom: 18px;
-}
-
-
-.grammar-header h3 {
-    color: var(--white);
-
-    font-size: 1.1rem;
-}
-
-
 .grammar-code {
-    padding: 24px;
+
+    margin: 0;
 
     overflow-x: auto;
 
+    padding: 18px;
+
     border: 1px solid var(--border);
 
-    border-radius: 10px;
+    border-radius: 8px;
 
-    background: var(--bg-editor);
+    background: var(--editor);
 
-    color: #b9cbd9;
+    color: #cce7f8;
 
     font-family:
-        "Cascadia Code",
-        "Consolas",
+        Consolas,
+        "Courier New",
         monospace;
 
-    font-size: 0.8rem;
+    font-size: 11px;
 
     line-height: 1.8;
 }
 
 
 .grammar-code span {
+
     color: var(--cyan);
-}
-
-
-/* ============================================================
-   SUCCESS / ERROR STATES
-   ============================================================ */
-
-.result-success {
-    border-left: 4px solid var(--success);
-}
-
-
-.result-success .result-icon {
-    border-color: rgba(37, 214, 149, 0.4);
-
-    color: var(--success);
-
-    background: rgba(37, 214, 149, 0.08);
-}
-
-
-.result-error {
-    border-left: 4px solid var(--error);
-}
-
-
-.result-error .result-icon {
-    border-color: rgba(255, 99, 125, 0.4);
-
-    color: var(--error);
-
-    background: rgba(255, 99, 125, 0.08);
-}
-
-
-.error-message {
-    max-width: 600px;
-
-    margin-top: 16px;
-
-    padding: 14px 16px;
-
-    border: 1px solid rgba(255, 99, 125, 0.25);
-
-    border-radius: 8px;
-
-    background: rgba(255, 99, 125, 0.06);
-
-    color: #ffb2be;
-
-    font-family:
-        "Cascadia Code",
-        "Consolas",
-        monospace;
-
-    font-size: 0.78rem;
-
-    text-align: left;
 }
 
 
@@ -880,71 +1663,171 @@ textarea:focus {
    ============================================================ */
 
 footer {
+
     display: flex;
 
     justify-content: space-between;
 
     gap: 20px;
 
-    padding: 24px 6%;
+    padding: 22px 34px;
 
     border-top: 1px solid var(--border);
 
-    color: var(--muted);
+    color: var(--text-muted);
 
-    font-size: 0.68rem;
+    font-family: Consolas, monospace;
 
-    letter-spacing: 0.04em;
+    font-size: 8px;
+
+    letter-spacing: 0.4px;
 }
 
 
 /* ============================================================
-   RESPONSIVE DESIGN
+   RESPONSIVE — TABLET
    ============================================================ */
 
-@media (max-width: 900px) {
+@media (max-width: 850px) {
+
+    .container {
+
+        width: min(100% - 28px, 720px);
+
+        padding-top: 32px;
+    }
+
 
     .workspace {
+
         grid-template-columns: 1fr;
     }
 
-    .intro h2 {
-        font-size: 2.3rem;
+
+    .input-panel {
+
+        border-right: 0;
+
+        border-bottom: 1px solid var(--border);
     }
 
+
+    .result-panel {
+
+        min-height: auto;
+    }
+
+
+    .result-content {
+
+        min-height: 350px;
+    }
 }
 
 
-@media (max-width: 600px) {
+/* ============================================================
+   RESPONSIVE — MOBILE
+   ============================================================ */
+
+@media (max-width: 560px) {
 
     .app-header {
-        padding: 16px 5%;
+
+        height: auto;
+
+        min-height: 66px;
+
+        padding: 12px 16px;
     }
 
+
+    .brand h1 {
+
+        font-size: 11px;
+    }
+
+
+    .brand p {
+
+        font-size: 9px;
+    }
+
+
     .status {
+
         display: none;
     }
 
-    .container {
-        width: 92%;
 
-        padding: 40px 0;
+    .container {
+
+        width: calc(100% - 20px);
+
+        padding: 28px 0 40px;
     }
+
+
+    .intro h2 {
+
+        font-size: 31px;
+    }
+
+
+    .input-panel,
+    .result-panel {
+
+        padding: 17px;
+    }
+
 
     .actions {
-        flex-direction: column;
+
+        grid-template-columns: 1fr;
     }
 
-    footer {
-        flex-direction: column;
+
+    .secondary-button {
+
+        height: 38px;
     }
+
+
+    .instruction-card {
+
+        grid-template-columns: 30px minmax(0, 1fr);
+
+        gap: 8px;
+    }
+
+
+    .instruction-results {
+
+        max-height: 360px;
+    }
+
+
+    .tabs {
+
+        overflow-x: auto;
+    }
+
 
     .tab-button {
-        flex: 1;
 
-        padding: 14px 8px;
+        flex: 0 0 auto;
 
-        font-size: 0.62rem;
+        padding: 12px 13px;
+
+        font-size: 8px;
     }
 
+
+    footer {
+
+        flex-direction: column;
+
+        padding: 18px;
+
+        text-align: center;
+    }
 }

@@ -1,22 +1,16 @@
 // ============================================================
 // CMPS 3111 — LANGUAGE RECOGNIZER
 // Frontend JavaScript
-//
-// This file communicates with the C# ASP.NET Core API.
-// The actual recognition logic remains in the C# backend.
 // ============================================================
 
 
 // ============================================================
-// ELEMENT REFERENCES
+// DOM ELEMENTS
 // ============================================================
 
 const programInput = document.getElementById("programInput");
 const validateButton = document.getElementById("validateButton");
-
 const resultContent = document.getElementById("resultContent");
-const connectionStatus = document.getElementById("connectionStatus");
-
 const outputSection = document.getElementById("outputSection");
 
 const derivationOutput =
@@ -25,9 +19,43 @@ const derivationOutput =
 const parseTreeOutput =
     document.getElementById("parseTreeOutput");
 
+const connectionStatus =
+    document.getElementById("connectionStatus");
+
 
 // ============================================================
-// API REQUEST
+// EXAMPLE PROGRAMS
+// ============================================================
+
+const examples = {
+
+    sqr:
+        "begin SQR A1-C4 end",
+
+    tri:
+        "begin TRI A1-C6-G3 end",
+
+    multiple:
+        "begin SQR A1-C4. TRI A1-C6-G3 end"
+};
+
+
+// ============================================================
+// LOAD EXAMPLE
+// ============================================================
+
+function loadExample(type) {
+
+    if (examples[type]) {
+        programInput.value = examples[type];
+    }
+
+    programInput.focus();
+}
+
+
+// ============================================================
+// VALIDATE PROGRAM
 // ============================================================
 
 async function recognizeProgram() {
@@ -35,13 +63,13 @@ async function recognizeProgram() {
     const input = programInput.value.trim();
 
     // --------------------------------------------------------
-    // Make sure the user entered something.
+    // Check for empty input.
     // --------------------------------------------------------
 
     if (!input) {
 
         showError(
-            "Please enter a program before selecting Validate Program."
+            "Please enter a program before validating."
         );
 
         return;
@@ -49,199 +77,428 @@ async function recognizeProgram() {
 
 
     // --------------------------------------------------------
-    // Update interface while the request is being processed.
+    // Show processing state.
     // --------------------------------------------------------
 
-    validateButton.disabled = true;
+    setProcessingState(true);
 
-    validateButton.innerHTML = `
-        <span>⟳</span>
-        VALIDATING...
-    `;
 
-    connectionStatus.textContent = "CONNECTING";
+    // --------------------------------------------------------
+    // Hide old derivation / parse tree results.
+    // They will only appear again if the complete program
+    // is valid.
+    // --------------------------------------------------------
+
+    outputSection.classList.add("hidden");
 
 
     try {
 
         // ----------------------------------------------------
-        // Send the program to the C# API.
-        //
-        // Because the frontend is served by the same
-        // ASP.NET Core application, we can use a relative URL.
+        // Send program to the C# backend.
         // ----------------------------------------------------
 
-        const response = await fetch("/api/recognize", {
+        const response = await fetch(
+            "/api/recognize",
+            {
+                method: "POST",
 
-            method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
 
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-                input: input
-            })
-
-        });
+                body: JSON.stringify({
+                    input: input
+                })
+            }
+        );
 
 
         // ----------------------------------------------------
-        // Check for an HTTP error.
-        // ----------------------------------------------------
-
-        if (!response.ok) {
-
-            throw new Error(
-                `Server returned HTTP ${response.status}`
-            );
-
-        }
-
-
-        // ----------------------------------------------------
-        // Convert the response to JavaScript data.
+        // Read API response.
         // ----------------------------------------------------
 
         const data = await response.json();
 
 
         // ----------------------------------------------------
-        // Display the result.
+        // Handle HTTP errors.
         // ----------------------------------------------------
 
-        if (data.valid) {
+        if (!response.ok) {
 
-            showSuccess(data);
+            showError(
+                data.error ||
+                "The server could not process the program."
+            );
 
-        } else {
-
-            showError(data.error);
-
+            return;
         }
 
 
-        connectionStatus.textContent = "CONNECTED";
+        // ----------------------------------------------------
+        // Display the complete validation result.
+        // ----------------------------------------------------
 
-
-    } catch (error) {
-
-        console.error("API Error:", error);
-
-        connectionStatus.textContent = "OFFLINE";
-
-        showError(
-            "Unable to connect to the C# backend. " +
-            "Make sure the ASP.NET Core server is running."
-        );
-
-    } finally {
-
-        validateButton.disabled = false;
-
-        validateButton.innerHTML = `
-            <span>▶</span>
-            VALIDATE PROGRAM
-        `;
+        displayRecognitionResult(data);
 
     }
+    catch (error) {
 
+        console.error(error);
+
+        showError(
+            "Could not connect to the C# backend. " +
+            "Make sure the API server is running."
+        );
+
+    }
+    finally {
+
+        // ----------------------------------------------------
+        // Restore button.
+        // ----------------------------------------------------
+
+        setProcessingState(false);
+    }
 }
 
 
 // ============================================================
-// SUCCESS RESULT
+// DISPLAY RECOGNITION RESULT
 // ============================================================
 
-function showSuccess(data) {
+function displayRecognitionResult(data) {
+
+    const instructionResults =
+        data.instructionResults || [];
+
+
+    // --------------------------------------------------------
+    // Count valid and invalid instructions.
+    // --------------------------------------------------------
+
+    const validCount =
+        instructionResults.filter(
+            instruction => instruction.valid
+        ).length;
+
+    const invalidCount =
+        instructionResults.length - validCount;
+
+
+    // ========================================================
+    // COMPLETE PROGRAM VALID
+    // ========================================================
+
+    if (data.valid) {
+
+        connectionStatus.textContent = "VALID";
+        connectionStatus.className =
+            "connection-status success-status";
+
+
+        resultContent.className =
+            "result-content success-result";
+
+
+        resultContent.innerHTML = `
+
+            <div class="result-icon success-icon">
+                ✓
+            </div>
+
+            <h3>Program Valid</h3>
+
+            <p>
+                All ${instructionResults.length}
+                instruction${instructionResults.length === 1 ? "" : "s"}
+                follow the BNF grammar.
+            </p>
+
+            <div class="instruction-summary">
+                <span class="summary-valid">
+                    ✓ ${validCount} Correct
+                </span>
+            </div>
+
+            <div class="instruction-results">
+                ${buildInstructionResults(instructionResults)}
+            </div>
+        `;
+
+
+        // ----------------------------------------------------
+        // Display derivation and parse tree.
+        // ----------------------------------------------------
+
+        derivationOutput.textContent =
+            data.derivation || "";
+
+        parseTreeOutput.textContent =
+            data.parseTree || "";
+
+        outputSection.classList.remove("hidden");
+
+
+        // ----------------------------------------------------
+        // Make sure derivation tab is selected.
+        // ----------------------------------------------------
+
+        resetOutputTabs();
+
+        return;
+    }
+
+
+    // ========================================================
+    // COMPLETE PROGRAM INVALID
+    // ========================================================
+
+    connectionStatus.textContent = "INVALID";
+    connectionStatus.className =
+        "connection-status error-status";
+
 
     resultContent.className =
-        "result-content result-success";
+        "result-content error-result";
 
 
     resultContent.innerHTML = `
 
-        <div class="result-icon">
-            ✓
+        <div class="result-icon error-icon">
+            ✕
         </div>
 
-        <h3>VALID PROGRAM</h3>
+        <h3>Program Invalid</h3>
 
         <p>
-            The C# recognizer accepted the program
-            according to the supplied BNF grammar.
+            ${invalidCount} of
+            ${instructionResults.length}
+            instruction${instructionResults.length === 1 ? "" : "s"}
+            contain${invalidCount === 1 ? "s" : ""} error${invalidCount === 1 ? "" : "s"}.
         </p>
 
+        <div class="instruction-summary">
+
+            <span class="summary-valid">
+                ✓ ${validCount} Correct
+            </span>
+
+            <span class="summary-invalid">
+                ✕ ${invalidCount} Wrong
+            </span>
+
+        </div>
+
+        <div class="instruction-results">
+            ${buildInstructionResults(instructionResults)}
+        </div>
+
+        ${
+            instructionResults.length === 0
+                ? `
+                    <div class="program-error">
+                        <strong>Program Error</strong>
+                        <p>
+                            ${escapeHtml(
+                                data.error ||
+                                "The program does not follow the grammar."
+                            )}
+                        </p>
+                    </div>
+                  `
+                : ""
+        }
+
     `;
-
-
-    // --------------------------------------------------------
-    // Display the actual C# derivation.
-    // --------------------------------------------------------
-
-    derivationOutput.textContent =
-        data.derivation || "No derivation returned.";
-
-
-    // --------------------------------------------------------
-    // Display the actual C# parse tree.
-    // --------------------------------------------------------
-
-    parseTreeOutput.textContent =
-        data.parseTree || "No parse tree returned.";
-
-
-    // --------------------------------------------------------
-    // Reveal the output section.
-    // --------------------------------------------------------
-
-    outputSection.classList.remove("hidden");
-
-
-    // --------------------------------------------------------
-    // Always show the derivation first.
-    // --------------------------------------------------------
-
-    showTabById("derivation");
-
 }
 
 
 // ============================================================
-// ERROR RESULT
+// BUILD INDIVIDUAL INSTRUCTION RESULTS
+// ============================================================
+
+function buildInstructionResults(results) {
+
+    if (!results || results.length === 0) {
+
+        return `
+            <div class="no-instructions">
+                No individual instruction results available.
+            </div>
+        `;
+    }
+
+
+    return results.map(instruction => {
+
+        // ----------------------------------------------------
+        // VALID INSTRUCTION
+        // ----------------------------------------------------
+
+        if (instruction.valid) {
+
+            return `
+
+                <div class="instruction-card instruction-valid">
+
+                    <div class="instruction-icon">
+                        ✓
+                    </div>
+
+                    <div class="instruction-details">
+
+                        <div class="instruction-heading">
+                            Instruction ${instruction.number}
+                        </div>
+
+                        <div class="instruction-code">
+                            ${escapeHtml(
+                                instruction.instruction
+                            )}
+                        </div>
+
+                        <div class="instruction-message valid-message">
+                            Valid instruction
+                        </div>
+
+                    </div>
+
+                </div>
+
+            `;
+        }
+
+
+        // ----------------------------------------------------
+        // INVALID INSTRUCTION
+        // ----------------------------------------------------
+
+        return `
+
+            <div class="instruction-card instruction-invalid">
+
+                <div class="instruction-icon">
+                    ✕
+                </div>
+
+                <div class="instruction-details">
+
+                    <div class="instruction-heading">
+                        Instruction ${instruction.number}
+                    </div>
+
+                    <div class="instruction-code">
+                        ${escapeHtml(
+                            instruction.instruction
+                        )}
+                    </div>
+
+                    <div class="instruction-message error-message">
+
+                        <strong>What's wrong:</strong>
+
+                        <p>
+                            ${escapeHtml(
+                                instruction.error
+                            )}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }).join("");
+}
+
+
+// ============================================================
+// PROCESSING STATE
+// ============================================================
+
+function setProcessingState(isProcessing) {
+
+    if (isProcessing) {
+
+        validateButton.disabled = true;
+
+        validateButton.innerHTML =
+            "<span>⟳</span> VALIDATING...";
+
+        connectionStatus.textContent =
+            "CHECKING";
+
+        connectionStatus.className =
+            "connection-status processing-status";
+
+
+        resultContent.className =
+            "result-content processing-result";
+
+
+        resultContent.innerHTML = `
+
+            <div class="result-icon processing-icon">
+                ⟳
+            </div>
+
+            <h3>Checking Program...</h3>
+
+            <p>
+                Sending your program to the
+                C# language recognizer.
+            </p>
+
+        `;
+
+    }
+    else {
+
+        validateButton.disabled = false;
+
+        validateButton.innerHTML =
+            "<span>▶</span> VALIDATE PROGRAM";
+    }
+}
+
+
+// ============================================================
+// SHOW ERROR
 // ============================================================
 
 function showError(message) {
 
+    connectionStatus.textContent = "ERROR";
+
+    connectionStatus.className =
+        "connection-status error-status";
+
+
     resultContent.className =
-        "result-content result-error";
+        "result-content error-result";
 
 
     resultContent.innerHTML = `
 
-        <div class="result-icon">
+        <div class="result-icon error-icon">
             !
         </div>
 
-        <h3>INVALID PROGRAM</h3>
+        <h3>Unable to Validate</h3>
 
         <p>
-            The C# recognizer rejected the input.
-        </p>
-
-        <div class="error-message">
             ${escapeHtml(message)}
-        </div>
+        </p>
 
     `;
 
 
-    // --------------------------------------------------------
-    // Hide previous successful output.
-    // --------------------------------------------------------
-
     outputSection.classList.add("hidden");
-
 }
 
 
@@ -252,6 +509,13 @@ function showError(message) {
 function clearProgram() {
 
     programInput.value = "";
+
+    connectionStatus.textContent =
+        "READY";
+
+    connectionStatus.className =
+        "connection-status";
+
 
     resultContent.className =
         "result-content empty-result";
@@ -273,44 +537,9 @@ function clearProgram() {
     `;
 
 
-    connectionStatus.textContent = "READY";
-
     outputSection.classList.add("hidden");
 
     programInput.focus();
-
-}
-
-
-// ============================================================
-// LOAD EXAMPLES
-// ============================================================
-
-function loadExample(type) {
-
-    const examples = {
-
-        sqr:
-            "begin SQR A1-C4 end",
-
-        tri:
-            "begin TRI A1-C6-G3 end",
-
-        multiple:
-            "begin SQR A1-C4. TRI A1-C6-G3 end"
-
-    };
-
-
-    if (examples[type]) {
-
-        programInput.value =
-            examples[type];
-
-        programInput.focus();
-
-    }
-
 }
 
 
@@ -318,137 +547,106 @@ function loadExample(type) {
 // TAB SWITCHING
 // ============================================================
 
-function showTab(button, element) {
+function showTab(tab, button) {
 
-    // --------------------------------------------------------
-    // Remove active state from all tab buttons.
-    // --------------------------------------------------------
+    const derivationTab =
+        document.getElementById("derivationTab");
 
-    document
-        .querySelectorAll(".tab-button")
-        .forEach(tab => {
+    const treeTab =
+        document.getElementById("treeTab");
 
-            tab.classList.remove("active");
-
-        });
-
-
-    // --------------------------------------------------------
-    // Remove active state from all tab contents.
-    // --------------------------------------------------------
-
-    document
-        .querySelectorAll(".tab-content")
-        .forEach(tab => {
-
-            tab.classList.remove("active");
-
-        });
-
-
-    // --------------------------------------------------------
-    // Activate selected button.
-    // --------------------------------------------------------
-
-    element.classList.add("active");
-
-
-    // --------------------------------------------------------
-    // Activate selected content.
-    // --------------------------------------------------------
-
-    document
-        .getElementById(button + "Tab")
-        .classList.add("active");
-
-}
-
-
-// ============================================================
-// TAB SWITCHING BY ID
-// ============================================================
-
-function showTabById(tabId) {
-
-    document
-        .querySelectorAll(".tab-button")
-        .forEach(tab => {
-
-            tab.classList.remove("active");
-
-        });
-
-
-    document
-        .querySelectorAll(".tab-content")
-        .forEach(tab => {
-
-            tab.classList.remove("active");
-
-        });
-
-
-    document
-        .getElementById(tabId + "Tab")
-        .classList.add("active");
-
-
-    const buttons =
+    const tabButtons =
         document.querySelectorAll(".tab-button");
 
 
-    if (tabId === "derivation" && buttons.length > 0) {
+    tabButtons.forEach(
+        item => item.classList.remove("active")
+    );
 
-        buttons[0].classList.add("active");
+
+    if (tab === "derivation") {
+
+        derivationTab.classList.add("active");
+        treeTab.classList.remove("active");
+
+        button.classList.add("active");
 
     }
+    else if (tab === "tree") {
 
-    if (tabId === "tree" && buttons.length > 1) {
+        treeTab.classList.add("active");
+        derivationTab.classList.remove("active");
 
-        buttons[1].classList.add("active");
-
+        button.classList.add("active");
     }
-
 }
 
 
 // ============================================================
-// HTML ESCAPING
-//
-// Prevents API error messages from being interpreted as HTML.
+// RESET OUTPUT TABS
+// ============================================================
+
+function resetOutputTabs() {
+
+    const derivationTab =
+        document.getElementById("derivationTab");
+
+    const treeTab =
+        document.getElementById("treeTab");
+
+    const tabButtons =
+        document.querySelectorAll(".tab-button");
+
+
+    derivationTab.classList.add("active");
+    treeTab.classList.remove("active");
+
+
+    tabButtons.forEach(
+        item => item.classList.remove("active")
+    );
+
+
+    if (tabButtons.length > 0) {
+        tabButtons[0].classList.add("active");
+    }
+}
+
+
+// ============================================================
+// ESCAPE HTML
 // ============================================================
 
 function escapeHtml(value) {
 
-    const div = document.createElement("div");
+    if (value === null || value === undefined) {
+        return "";
+    }
 
-    div.textContent = value;
 
-    return div.innerHTML;
-
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 
 // ============================================================
 // KEYBOARD SHORTCUT
-//
-// Ctrl + Enter or Cmd + Enter validates the program.
 // ============================================================
 
 programInput.addEventListener(
     "keydown",
     function (event) {
 
-        if (
-            (event.ctrlKey || event.metaKey) &&
-            event.key === "Enter"
-        ) {
+        // Ctrl + Enter
+        if (event.ctrlKey && event.key === "Enter") {
 
             event.preventDefault();
 
             recognizeProgram();
-
         }
-
     }
 );

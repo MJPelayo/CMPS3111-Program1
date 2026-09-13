@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 public class Validator
 {
@@ -270,4 +271,147 @@ public class Validator
         // Everything follows the grammar.
         return "";
     }
+
+
+    // ============================================================
+    // GET ALL INSTRUCTION RESULTS
+    //
+    // Unlike GetProgramError(), this method does NOT stop at
+    // the first invalid instruction.
+    //
+    // Every instruction is checked so the web interface can show:
+    //
+    // Instruction 1 -> VALID
+    // Instruction 2 -> INVALID + reason
+    // Instruction 3 -> INVALID + reason
+    // ============================================================
+    public List<InstructionResult> GetInstructionResults(string input)
+    {
+        List<InstructionResult> results =
+            new List<InstructionResult>();
+
+        // --------------------------------------------------------
+        // Check the basic program structure first.
+        // --------------------------------------------------------
+
+        if (!input.StartsWith("begin "))
+        {
+            return results;
+        }
+
+        if (!input.EndsWith(" end"))
+        {
+            return results;
+        }
+
+        // --------------------------------------------------------
+        // Extract the instruction section.
+        // --------------------------------------------------------
+
+        string instructionText = input.Substring(
+            6,
+            input.Length - 10
+        );
+
+        if (string.IsNullOrWhiteSpace(instructionText))
+        {
+            return results;
+        }
+
+        // --------------------------------------------------------
+        // Separate instructions using periods.
+        // --------------------------------------------------------
+
+        string[] instructions =
+            instructionText.Split('.');
+
+
+        // --------------------------------------------------------
+        // Validate EVERY instruction.
+        // --------------------------------------------------------
+
+        for (int i = 0; i < instructions.Length; i++)
+        {
+            string instruction =
+                instructions[i].Trim();
+
+
+            // ----------------------------------------------------
+            // Empty instruction.
+            // ----------------------------------------------------
+
+            if (string.IsNullOrEmpty(instruction))
+            {
+                results.Add(
+                    new InstructionResult(
+                        i + 1,
+                        instruction,
+                        false,
+                        "An empty instruction was found."
+                    )
+                );
+
+                continue;
+            }
+
+
+            // ----------------------------------------------------
+            // Validate this instruction.
+            // ----------------------------------------------------
+
+            string error =
+                GetInstructionError(instruction);
+
+
+            // ----------------------------------------------------
+            // Valid instruction.
+            // ----------------------------------------------------
+
+            if (string.IsNullOrEmpty(error))
+            {
+                results.Add(
+                    new InstructionResult(
+                        i + 1,
+                        instruction,
+                        true,
+                        ""
+                    )
+                );
+            }
+
+
+            // ----------------------------------------------------
+            // Invalid instruction.
+            // ----------------------------------------------------
+
+            else
+            {
+                results.Add(
+                    new InstructionResult(
+                        i + 1,
+                        instruction,
+                        false,
+                        error
+                    )
+                );
+            }
+        }
+
+
+        return results;
+    }
 }
+
+
+// ================================================================
+// INSTRUCTION RESULT
+//
+// Stores the validation result for one instruction.
+// ================================================================
+
+public record InstructionResult(
+    int Number,
+    string Instruction,
+    bool Valid,
+    string Error
+);
