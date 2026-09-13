@@ -1,0 +1,950 @@
+/* ============================================================
+   CMPS 3111 — LANGUAGE RECOGNIZER
+   Main application stylesheet
+   ============================================================ */
+
+
+/* ============================================================
+   RESET
+   ============================================================ */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+:root {
+    --bg-main: #07111f;
+    --bg-panel: #0b1f33;
+    --bg-editor: #06101c;
+    --bg-card: #102942;
+
+    --border: #1d3a55;
+
+    --blue: #1597e5;
+    --cyan: #16c7d9;
+    --purple: #7c3aed;
+    --gold: #d4a72c;
+
+    --white: #f4f7fa;
+    --text: #d6e0ea;
+    --muted: #8da1b5;
+
+    --success: #25d695;
+    --error: #ff637d;
+
+    --shadow: 0 18px 45px rgba(0, 0, 0, 0.30);
+}
+
+
+/* ============================================================
+   BODY
+   ============================================================ */
+
+body {
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at 85% 10%,
+            rgba(21, 151, 229, 0.10),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 10% 80%,
+            rgba(124, 58, 237, 0.08),
+            transparent 30%
+        ),
+        var(--bg-main);
+
+    color: var(--text);
+
+    font-family:
+        Inter,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    line-height: 1.5;
+}
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.app-header {
+    width: 100%;
+
+    padding: 20px 6%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-bottom: 1px solid var(--border);
+
+    background: rgba(7, 17, 31, 0.92);
+
+    backdrop-filter: blur(10px);
+}
+
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+
+.brand-mark {
+    width: 48px;
+    height: 48px;
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid var(--blue);
+    border-radius: 10px;
+
+    background: rgba(21, 151, 229, 0.10);
+
+    color: var(--cyan);
+
+    font-family:
+        "Cascadia Code",
+        "Consolas",
+        monospace;
+
+    font-weight: 700;
+
+    box-shadow:
+        0 0 22px rgba(21, 151, 229, 0.12);
+}
+
+
+.brand h1 {
+    color: var(--white);
+
+    font-size: 1rem;
+
+    letter-spacing: 0.15em;
+}
+
+
+.brand p {
+    margin-top: 2px;
+
+    color: var(--muted);
+
+    font-size: 0.78rem;
+}
+
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 13px;
+
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    color: var(--muted);
+
+    font-size: 0.72rem;
+    font-weight: 700;
+
+    letter-spacing: 0.08em;
+}
+
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: var(--success);
+
+    box-shadow:
+        0 0 10px rgba(37, 214, 149, 0.7);
+}
+
+
+/* ============================================================
+   MAIN CONTAINER
+   ============================================================ */
+
+.container {
+    width: min(1400px, 88%);
+
+    margin: 0 auto;
+
+    padding: 60px 0;
+}
+
+
+/* ============================================================
+   INTRODUCTION
+   ============================================================ */
+
+.intro {
+    margin-bottom: 42px;
+
+    max-width: 850px;
+}
+
+
+.eyebrow,
+.panel-label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: var(--cyan);
+
+    font-size: 0.72rem;
+
+    font-weight: 800;
+
+    letter-spacing: 0.16em;
+}
+
+
+.intro h2 {
+    color: var(--white);
+
+    font-size: clamp(2rem, 4vw, 3.6rem);
+
+    line-height: 1.08;
+
+    letter-spacing: -0.03em;
+}
+
+
+.intro h2 span {
+    display: block;
+
+    color: var(--blue);
+}
+
+
+.intro p {
+    max-width: 650px;
+
+    margin-top: 18px;
+
+    color: var(--muted);
+
+    font-size: 1rem;
+}
+
+
+/* ============================================================
+   WORKSPACE
+   ============================================================ */
+
+.workspace {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr);
+
+    gap: 24px;
+}
+
+
+.panel {
+    border: 1px solid var(--border);
+
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(16, 41, 66, 0.95),
+            rgba(11, 31, 51, 0.95)
+        );
+
+    box-shadow: var(--shadow);
+
+    overflow: hidden;
+}
+
+
+.panel-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 22px 24px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.panel-header h3 {
+    color: var(--white);
+
+    font-size: 1.05rem;
+}
+
+
+.terminal-label,
+.connection-status,
+.output-badge,
+.grammar-tag {
+    padding: 5px 9px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 6px;
+
+    color: var(--muted);
+
+    font-size: 0.65rem;
+
+    font-weight: 800;
+
+    letter-spacing: 0.08em;
+}
+
+
+/* ============================================================
+   EDITOR
+   ============================================================ */
+
+.editor {
+    margin: 24px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    background: var(--bg-editor);
+}
+
+
+.editor-top {
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 0 14px;
+
+    border-bottom: 1px solid var(--border);
+
+    background: #091a2b;
+}
+
+
+.window-dot {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: var(--muted);
+
+    opacity: 0.65;
+}
+
+
+.editor-title {
+    margin-left: 8px;
+
+    color: var(--muted);
+
+    font-family:
+        "Cascadia Code",
+        "Consolas",
+        monospace;
+
+    font-size: 0.72rem;
+}
+
+
+textarea {
+    display: block;
+
+    width: 100%;
+
+    min-height: 210px;
+
+    padding: 22px;
+
+    resize: vertical;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    color: var(--white);
+
+    font-family:
+        "Cascadia Code",
+        "Consolas",
+        monospace;
+
+    font-size: 0.92rem;
+
+    line-height: 1.8;
+}
+
+
+textarea::placeholder {
+    color: #526b80;
+}
+
+
+textarea:focus {
+    box-shadow:
+        inset 0 0 0 1px rgba(21, 151, 229, 0.45);
+}
+
+
+/* ============================================================
+   EXAMPLES
+   ============================================================ */
+
+.examples {
+    display: flex;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    padding: 0 24px 20px;
+
+    color: var(--muted);
+
+    font-size: 0.75rem;
+}
+
+
+.examples button {
+    padding: 6px 10px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 6px;
+
+    background: transparent;
+
+    color: var(--text);
+
+    cursor: pointer;
+
+    font-size: 0.68rem;
+
+    font-weight: 700;
+
+    transition: 0.2s ease;
+}
+
+
+.examples button:hover {
+    border-color: var(--blue);
+
+    color: var(--cyan);
+
+    background: rgba(21, 151, 229, 0.08);
+}
+
+
+/* ============================================================
+   ACTIONS
+   ============================================================ */
+
+.actions {
+    display: flex;
+
+    gap: 12px;
+
+    padding: 0 24px 24px;
+}
+
+
+.primary-button,
+.secondary-button {
+    min-height: 46px;
+
+    padding: 0 18px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-weight: 800;
+
+    letter-spacing: 0.04em;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.primary-button {
+    flex: 1;
+
+    border: 1px solid var(--blue);
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--blue),
+            #0d74b8
+        );
+
+    color: white;
+
+    box-shadow:
+        0 8px 24px rgba(21, 151, 229, 0.18);
+}
+
+
+.primary-button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 30px rgba(21, 151, 229, 0.28);
+}
+
+
+.secondary-button {
+    border: 1px solid var(--border);
+
+    background: transparent;
+
+    color: var(--text);
+}
+
+
+.secondary-button:hover {
+    border-color: var(--cyan);
+
+    color: var(--cyan);
+}
+
+
+/* ============================================================
+   RESULT
+   ============================================================ */
+
+.result-content {
+    min-height: 335px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    text-align: center;
+
+    padding: 40px;
+}
+
+
+.result-icon {
+    width: 70px;
+    height: 70px;
+
+    display: grid;
+    place-items: center;
+
+    margin-bottom: 20px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 14px;
+
+    background: rgba(21, 151, 229, 0.08);
+
+    color: var(--cyan);
+
+    font-family:
+        "Cascadia Code",
+        "Consolas",
+        monospace;
+
+    font-weight: 700;
+
+    font-size: 1.1rem;
+}
+
+
+.result-content h3 {
+    color: var(--white);
+
+    font-size: 1.25rem;
+}
+
+
+.result-content p {
+    max-width: 420px;
+
+    margin-top: 8px;
+
+    color: var(--muted);
+
+    font-size: 0.9rem;
+}
+
+
+.empty-result {
+    opacity: 0.9;
+}
+
+
+/* ============================================================
+   OUTPUT SECTION
+   ============================================================ */
+
+.output-section {
+    margin-top: 24px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 16px;
+
+    background: var(--bg-panel);
+
+    box-shadow: var(--shadow);
+
+    overflow: hidden;
+}
+
+
+.hidden {
+    display: none;
+}
+
+
+.tabs {
+    display: flex;
+
+    border-bottom: 1px solid var(--border);
+
+    background: #091a2b;
+}
+
+
+.tab-button {
+    padding: 16px 22px;
+
+    border: none;
+
+    border-right: 1px solid var(--border);
+
+    background: transparent;
+
+    color: var(--muted);
+
+    cursor: pointer;
+
+    font-size: 0.72rem;
+
+    font-weight: 800;
+
+    letter-spacing: 0.08em;
+}
+
+
+.tab-button:hover {
+    color: var(--white);
+}
+
+
+.tab-button.active {
+    color: var(--cyan);
+
+    background: rgba(21, 151, 229, 0.08);
+
+    box-shadow:
+        inset 0 -2px 0 var(--cyan);
+}
+
+
+.tab-content {
+    display: none;
+
+    padding: 28px;
+}
+
+
+.tab-content.active {
+    display: block;
+}
+
+
+.output-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 18px;
+}
+
+
+.output-header h3 {
+    color: var(--white);
+
+    font-size: 1.05rem;
+}
+
+
+.code-output {
+    min-height: 250px;
+
+    padding: 22px;
+
+    overflow-x: auto;
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+
+    background: var(--bg-editor);
+
+    color: #b9d9ec;
+
+    font-family:
+        "Cascadia Code",
+        "Consolas",
+        monospace;
+
+    font-size: 0.82rem;
+
+    line-height: 1.75;
+
+    white-space: pre-wrap;
+}
+
+
+.tree-output {
+    color: #c5d8e7;
+}
+
+
+/* ============================================================
+   GRAMMAR
+   ============================================================ */
+
+.grammar-section {
+    margin-top: 24px;
+
+    padding: 28px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(16, 41, 66, 0.9),
+            rgba(11, 31, 51, 0.9)
+        );
+
+    box-shadow: var(--shadow);
+}
+
+
+.grammar-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 18px;
+}
+
+
+.grammar-header h3 {
+    color: var(--white);
+
+    font-size: 1.1rem;
+}
+
+
+.grammar-code {
+    padding: 24px;
+
+    overflow-x: auto;
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+
+    background: var(--bg-editor);
+
+    color: #b9cbd9;
+
+    font-family:
+        "Cascadia Code",
+        "Consolas",
+        monospace;
+
+    font-size: 0.8rem;
+
+    line-height: 1.8;
+}
+
+
+.grammar-code span {
+    color: var(--cyan);
+}
+
+
+/* ============================================================
+   SUCCESS / ERROR STATES
+   ============================================================ */
+
+.result-success {
+    border-left: 4px solid var(--success);
+}
+
+
+.result-success .result-icon {
+    border-color: rgba(37, 214, 149, 0.4);
+
+    color: var(--success);
+
+    background: rgba(37, 214, 149, 0.08);
+}
+
+
+.result-error {
+    border-left: 4px solid var(--error);
+}
+
+
+.result-error .result-icon {
+    border-color: rgba(255, 99, 125, 0.4);
+
+    color: var(--error);
+
+    background: rgba(255, 99, 125, 0.08);
+}
+
+
+.error-message {
+    max-width: 600px;
+
+    margin-top: 16px;
+
+    padding: 14px 16px;
+
+    border: 1px solid rgba(255, 99, 125, 0.25);
+
+    border-radius: 8px;
+
+    background: rgba(255, 99, 125, 0.06);
+
+    color: #ffb2be;
+
+    font-family:
+        "Cascadia Code",
+        "Consolas",
+        monospace;
+
+    font-size: 0.78rem;
+
+    text-align: left;
+}
+
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+footer {
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 24px 6%;
+
+    border-top: 1px solid var(--border);
+
+    color: var(--muted);
+
+    font-size: 0.68rem;
+
+    letter-spacing: 0.04em;
+}
+
+
+/* ============================================================
+   RESPONSIVE DESIGN
+   ============================================================ */
+
+@media (max-width: 900px) {
+
+    .workspace {
+        grid-template-columns: 1fr;
+    }
+
+    .intro h2 {
+        font-size: 2.3rem;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .app-header {
+        padding: 16px 5%;
+    }
+
+    .status {
+        display: none;
+    }
+
+    .container {
+        width: 92%;
+
+        padding: 40px 0;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+
+    footer {
+        flex-direction: column;
+    }
+
+    .tab-button {
+        flex: 1;
+
+        padding: 14px 8px;
+
+        font-size: 0.62rem;
+    }
+
+}
